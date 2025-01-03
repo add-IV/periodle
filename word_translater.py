@@ -1,6 +1,8 @@
 import nltk
 
 nltk.download('words')
+nltk.download('wordnet')
+
 
 with open("elements.txt") as f: # elements.txt contains all the elements in the periodic table
     elements = f.read().split()
@@ -17,7 +19,12 @@ letters_in_elements = sorted(letters_in_elements)
 
 depth = 5
 
-words = set(w.lower() for w in nltk.corpus.words.words())
+words = nltk.corpus.words.words()
+wn = nltk.corpus.wordnet.words()
+
+manywords = set(words) | set(wn)
+
+words = set(w.lower() for w in manywords)
 
 def check_if_word_can_be_formed(word):
     # tales a word and checks if it can be formed using the elements in the periodic table
@@ -30,7 +37,10 @@ def check_if_word_can_be_formed(word):
     for letter in word:
         if letter not in letters_in_elements:
             return False
-    
+    # check if word is in the nltk words corpus
+    if word not in words:
+        print(f"{word} not in words")
+        return False    
     # check if word can be formed using the elements
     # since some elements have 1 letter and some have 2, we need to check all possible combinations
     current = 0
